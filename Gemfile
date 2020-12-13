@@ -36,6 +36,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'shoulda-matchers'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry'
 end
 
 group :development do
