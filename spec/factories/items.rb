@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :item do
-    name { "MyString" }
-    description { "MyString" }
+    name { Faker::Camera.model }
+    description { "Generated description" }
     unit_price { 1.5 }
-    merchant { nil }
+    merchant
   end
 end

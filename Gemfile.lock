@@ -136,6 +136,8 @@ GEM
       rspec-support (~> 3.9)
     rspec-support (3.10.0)
     ruby_dep (1.5.0)
+    shoulda-matchers (4.4.1)
+      activesupport (>= 4.2.0)
     simplecov (0.20.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -175,6 +177,7 @@ DEPENDENCIES
   puma (~> 3.11)
   rails (~> 5.2.4, >= 5.2.4.4)
   rspec-rails
+  shoulda-matchers
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
