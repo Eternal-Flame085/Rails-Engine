@@ -12,4 +12,13 @@ RSpec.describe Item, type: :model do
     it {should validate_presence_of :unit_price}
     it {should validate_presence_of :merchant_id}
   end
+
+  describe  'methods' do
+    it ".fetch_merchant returns the merchant that sells that item" do
+      item = create(:item)
+      item_merchant = Merchant.find(item.merchant_id)
+
+      expect(Item.fetch_merchant(item.id)).to eq(item_merchant)
+    end
+  end
 end
