@@ -62,7 +62,7 @@ describe "Merchant API" do
     previous_name = Merchant.last.name
     merchant_params = { name: "CDProject Red" }
     headers = {"CONTENT_TYPE" => "application/json"}
-
+    
     # We include this header to make sure that these params are passed as JSON rather than as plain text
     patch "/api/v1/merchants/#{id}", headers: headers, params: JSON.generate({merchant: merchant_params})
     merchant = Merchant.find_by(id: id)
