@@ -5,4 +5,8 @@ class Item < ApplicationRecord
                         :description,
                         :unit_price,
                         :merchant_id
+
+  def self.fetch_merchant(item_id)
+    self.find(item_id).merchant
+  end
 end
