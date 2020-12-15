@@ -28,9 +28,9 @@ describe 'Finders' do
   end
 
   it "find_all returns all matching item records using a name attribute" do
-    item_1 = create(:item, name: 'CyberPunk20177')
-    items_2 = create(:item, name: 'CloudPunk')
-    item_3 = create(:item, name: 'Just different')
+    create(:item, name: 'CyberPunk2077')
+    create(:item, name: 'CloudPunk')
+    create(:item, name: 'Just different')
     attribute = 'name'
     value = 'punk'
 
@@ -60,9 +60,9 @@ describe 'Finders' do
   end
 
   it "find_all returns all matching item records using a description attribute" do
-    item_1 = create(:item, description: 'CyberPunk20177')
-    items_2 = create(:item, description: 'CloudPunk')
-    item_3 = create(:item, description: 'Just different')
+    create(:item, description: 'CyberPunk2077')
+    create(:item, description: 'CloudPunk')
+    create(:item, description: 'Just different')
     attribute = 'description'
     value = 'punk'
 

@@ -28,9 +28,9 @@ describe 'Finders' do
   end
 
   it "find_all returns all matching merchant records using a name attribute" do
-    merchant_1 = create(:merchant, name: 'CDProject Red')
-    merchants_2 = create(:merchant, name: 'Red Camera Company')
-    merchant_3 = create(:merchant, name: 'Just different')
+    create(:merchant, name: 'CDProject Red')
+    create(:merchant, name: 'Red Camera Company')
+    create(:merchant, name: 'Just different')
     attribute = 'name'
     value = 'red'
 
