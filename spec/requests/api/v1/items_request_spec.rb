@@ -14,7 +14,7 @@ describe "Items API" do
 
     items[:data].each do |item|
       expect(item).to have_key(:id)
-      expect(item[:id]).to be_an(Integer)
+      expect(item[:id]).to be_an(String)
 
       expect(item).to have_key(:type)
       expect(item[:type]).to be_a(String)
@@ -46,7 +46,7 @@ describe "Items API" do
     expect(response).to be_successful
 
     expect(item[:data]).to have_key(:id)
-    expect(item[:data][:id]).to eq(id)
+    expect(item[:data][:id]).to eq(id.to_s)
 
     expect(item[:data][:attributes]).to have_key(:name)
     expect(item[:data][:attributes][:name]).to be_a(String)
@@ -128,7 +128,7 @@ describe "Relationships" do
     expect(merchant[:data].count).to eq(3)
 
     expect(merchant[:data]).to have_key(:id)
-    expect(merchant[:data][:id]).to eq(item_merchant.id)
+    expect(merchant[:data][:id]).to eq(item_merchant.id.to_s)
 
     expect(merchant[:data][:attributes]).to have_key(:name)
     expect(merchant[:data][:attributes][:name]).to be_a(String)
