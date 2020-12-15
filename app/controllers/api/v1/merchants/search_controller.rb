@@ -1,11 +1,9 @@
 class Api::V1::Merchants::SearchController < ApplicationController
   def find_merchant
-    attribute = params.keys.first
-    render json: MerchantSerializer.new(Merchant.where("#{attribute} ILIKE ?", "%#{params[attribute]}%").first)
+    render json: MerchantSerializer.new(SearchFacade.find_merchant(params))
   end
 
   def find_all
-    attribute = params.keys.first
-    render json: MerchantSerializer.new(Merchant.where("#{attribute} ILIKE ?", "%#{params[attribute]}%"))
+    render json: MerchantSerializer.new(SearchFacade.find_all_merchants(params))
   end
 end
