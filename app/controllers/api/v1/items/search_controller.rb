@@ -1,15 +1,9 @@
 class Api::V1::Items::SearchController < ApplicationController
   def find_item
-    attribute = params.keys.first
-    render json: ItemSerializer.new(Item.where("#{attribute} ILIKE ?", "%#{params[attribute]}%").first)
+    render json: ItemSerializer.new(SearchFacade.find_item(params))
   end
 
   def find_all
-    attribute = params.keys.first
-    if attribute == 'unit_price'
-      render json: ItemSerializer.new(Item.where(unit_price: params[attribute]))
-    else
-      render json: ItemSerializer.new(Item.where("#{attribute} ILIKE ?", "%#{params[attribute]}%"))
-    end
+    render json: ItemSerializer.new(SearchFacade.find_all_items(params))
   end
 end
