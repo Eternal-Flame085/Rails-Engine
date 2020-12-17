@@ -16,12 +16,16 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def destroy
-    render json: Merchant.delete(params[:id])
+    Merchant.delete(params[:id])
+  end
+
+  def revenue_accross_dates
+    render json: RevenueSerializer.revenue(SearchFacade.revenue_accross_dates(params))
   end
 
   private
 
   def merchant_params
-    params.require(:merchant).permit(:name)
+    params.permit(:name)
   end
 end
