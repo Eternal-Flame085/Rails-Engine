@@ -5,4 +5,6 @@ class Transaction < ApplicationRecord
                         :credit_card_number,
                         :credit_card_date,
                         :result
+
+  scope :successful, -> { where(result: "success")}
 end

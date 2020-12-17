@@ -3,6 +3,8 @@ class Merchant < ApplicationRecord
   has_many :invoices
   has_many :items
 
+  scope :merchant_id, -> (merchant_id) { where(id: merchant_id)}
+
   def self.fetch_items(id)
     Item.where(merchant_id: id)
   end
@@ -18,7 +20,7 @@ class Merchant < ApplicationRecord
   def self.find_most_revenue(quantity)
     select("merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(invoices: [:invoice_items, :transactions])
-    .where(transactions: {result: "success"})
+    .merge(Transaction.successful)
     .group(:id)
     .order("revenue DESC")
     .limit(quantity)
@@ -27,7 +29,7 @@ class Merchant < ApplicationRecord
   def self.find_most_items_sold(quantity)
     select("merchants.*, SUM(invoice_items.quantity) AS items_sold")
     .joins(invoices: [:invoice_items, :transactions])
-    .where(transactions: {result: "success"})
+    .merge(Transaction.successful)
     .group(:id)
     .order("items_sold DESC")
     .limit(quantity)
@@ -35,13 +37,17 @@ class Merchant < ApplicationRecord
 
   def self.total_revenue_across_dates(start_date, end_date)
     joins(invoices: [:invoice_items, :transactions])
-    .where(transactions: {result: 'success'}, invoices: {created_at: (start_date)..("#{end_date} 23:59:59"), status: "shipped"})
+    .merge(Transaction.successful)
+    .merge(Invoice.shipped)
+    .merge(Invoice.between(start_date, end_date))
     .sum("invoice_items.quantity * invoice_items.unit_price")
   end
 
   def self.total_revenue_for_merchant(merchant_id)
     joins(invoices: [:invoice_items, :transactions])
-    .where(transactions: {result: 'success'}, merchants: {id: merchant_id}, invoices: {status: "shipped"})
+    .merge(Transaction.successful)
+    .merge(Invoice.shipped)
+    .merge(Merchant.merchant_id(merchant_id))
     .sum("invoice_items.quantity * invoice_items.unit_price")
   end
 end
