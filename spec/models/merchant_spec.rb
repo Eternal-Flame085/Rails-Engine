@@ -161,5 +161,24 @@ RSpec.describe Merchant, type: :model do
 
       expect(Merchant.total_revenue_across_dates(start, end_date)).to eq(11400.0)
     end
+
+    it ".totla_revenue_for_merchant returns the total revenue for a specific merchant" do
+      cdpr = create(:merchant, name: 'CDProject Red')
+      customer = create(:customer)
+
+      cyberpunk = create(:item, name: 'CyberPunk2077', unit_price: 60.0, merchant_id: cdpr.id)
+      wild_hunt = create(:item, name: 'The Witcher: Wild Hunt', unit_price: 30.0, merchant_id: cdpr.id)
+
+      invoice_1 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: cdpr.id, created_at: '2012-03-09')
+      invoice_2 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: cdpr.id, created_at: '2013-03-09')
+
+      create(:invoice_item, item_id: cyberpunk.id, quantity: 100, unit_price: 60.0, invoice_id: invoice_1.id )
+      create(:invoice_item, item_id: wild_hunt.id, quantity: 60, unit_price: 30.0, invoice_id: invoice_2.id )
+
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+
+      expect(Merchant.total_revenue_for_merchant(cdpr.id)).to eq(7800)
+    end
   end
 end
