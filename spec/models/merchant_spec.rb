@@ -46,5 +46,79 @@ RSpec.describe Merchant, type: :model do
       expect(merchants[1]).to be_a Merchant
       expect(merchants[1].name).to eq('Red Camera Company')
     end
+
+    it ".find_most_revenue returns an array of Merchant objects ordered from their revenue" do
+      cdpr = create(:merchant, name: 'CDProject Red')
+      ubisoft = create(:merchant, name: 'Ubisoft')
+      blizzard = create(:merchant, name: 'Blizzard')
+      customer = create(:customer)
+      #The games with their values
+      cyberpunk = create(:item, name: 'CyberPunk2077', unit_price: 60.0, merchant_id: cdpr.id)
+      wild_hunt = create(:item, name: 'The Witcher: Wild Hunt', unit_price: 30.0, merchant_id: cdpr.id)
+      acv = create(:item, name: 'Assasins Creed: Valhala', unit_price: 60.0, merchant_id: ubisoft.id)
+      aco = create(:item, name: 'Assasins Creed: Oddyssey', unit_price: 30.0, merchant_id: ubisoft.id)
+      overwatch = create(:item, name: 'Overwatch', unit_price: 60.0, merchant_id: blizzard.id)
+      starcraft = create(:item, name: 'Starcraft', unit_price: 30.0, merchant_id: blizzard.id)
+      #The invoices
+      invoice_1 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_2 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_3 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_4 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_5 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      invoice_6 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      #Invoice_items
+      create(:invoice_item, item_id: cyberpunk.id, unit_price: 60.0, invoice_id: invoice_1.id )
+      create(:invoice_item, item_id: wild_hunt.id, unit_price: 30.0, invoice_id: invoice_2.id )
+      create(:invoice_item, item_id: acv.id, unit_price: 60.0, invoice_id: invoice_3.id )
+      create(:invoice_item, item_id: aco.id, unit_price: 30.0, invoice_id: invoice_4.id )
+      create(:invoice_item, item_id: overwatch.id, unit_price: 30.0, invoice_id: invoice_5.id )
+      create(:invoice_item, item_id: starcraft.id, unit_price: 10.0, invoice_id: invoice_6.id )
+      #transactions
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: invoice_4.id, result: 'failed')
+      create(:transaction, invoice_id: invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: invoice_6.id, result: 'success')
+
+      expect(Merchant.find_most_revenue(2)).to eq([cdpr, ubisoft])
+    end
+
+    it ".find_most_items_sold returns an array of Merchant objects ordered by most items sold" do
+      cdpr = create(:merchant, name: 'CDProject Red')
+      ubisoft = create(:merchant, name: 'Ubisoft')
+      blizzard = create(:merchant, name: 'Blizzard')
+      customer = create(:customer)
+      #The games with their values
+      cyberpunk = create(:item, name: 'CyberPunk2077', unit_price: 60.0, merchant_id: cdpr.id)
+      wild_hunt = create(:item, name: 'The Witcher: Wild Hunt', unit_price: 30.0, merchant_id: cdpr.id)
+      acv = create(:item, name: 'Assasins Creed: Valhala', unit_price: 60.0, merchant_id: ubisoft.id)
+      aco = create(:item, name: 'Assasins Creed: Oddyssey', unit_price: 30.0, merchant_id: ubisoft.id)
+      overwatch = create(:item, name: 'Overwatch', unit_price: 60.0, merchant_id: blizzard.id)
+      starcraft = create(:item, name: 'Starcraft', unit_price: 30.0, merchant_id: blizzard.id)
+      #The invoices
+      invoice_1 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_2 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_3 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_4 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_5 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      invoice_6 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      #Invoice_items
+      create(:invoice_item, item_id: cyberpunk.id, quantity: 100, invoice_id: invoice_1.id )
+      create(:invoice_item, item_id: wild_hunt.id, quantity: 50, invoice_id: invoice_2.id )
+      create(:invoice_item, item_id: acv.id, quantity: 78, invoice_id: invoice_3.id )
+      create(:invoice_item, item_id: aco.id, quantity: 39, invoice_id: invoice_4.id )
+      create(:invoice_item, item_id: overwatch.id, quantity: 30, invoice_id: invoice_5.id )
+      create(:invoice_item, item_id: starcraft.id, quantity: 10, invoice_id: invoice_6.id )
+      #transactions
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: invoice_4.id, result: 'failed')
+      create(:transaction, invoice_id: invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: invoice_6.id, result: 'success')
+      # require "pry"; binding.pry
+      expect(Merchant.find_most_items_sold(2)).to eq([cdpr, ubisoft])
+    end
   end
 end

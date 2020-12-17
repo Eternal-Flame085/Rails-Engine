@@ -58,4 +58,94 @@ describe 'Finders' do
       expect(merchant[:attributes][:name]).to be_a(String)
     end
   end
+
+  describe 'Business Intelligence' do
+    before :each do
+      #companies
+      cdpr = create(:merchant, name: 'CDProject Red')
+      ubisoft = create(:merchant, name: 'Ubisoft')
+      blizzard = create(:merchant, name: 'Blizzard')
+      customer = create(:customer)
+      #The games with their values
+      cyberpunk = create(:item, name: 'CyberPunk2077', unit_price: 60.0, merchant_id: cdpr.id)
+      wild_hunt = create(:item, name: 'The Witcher: Wild Hunt', unit_price: 30.0, merchant_id: cdpr.id)
+      acv = create(:item, name: 'Assasins Creed: Valhala', unit_price: 60.0, merchant_id: ubisoft.id)
+      aco = create(:item, name: 'Assasins Creed: Oddyssey', unit_price: 30.0, merchant_id: ubisoft.id)
+      overwatch = create(:item, name: 'Overwatch', unit_price: 60.0, merchant_id: blizzard.id)
+      starcraft = create(:item, name: 'Starcraft', unit_price: 30.0, merchant_id: blizzard.id)
+      #The invoices
+      invoice_1 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_2 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
+      invoice_3 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_4 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
+      invoice_5 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      invoice_6 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      #Invoice_items
+      create(:invoice_item, item_id: cyberpunk.id, quantity: 100, unit_price: 60.0, invoice_id: invoice_1.id )
+      create(:invoice_item, item_id: wild_hunt.id, quantity: 60, unit_price: 30.0, invoice_id: invoice_2.id )
+      create(:invoice_item, item_id: acv.id, quantity: 60, unit_price: 60.0, invoice_id: invoice_3.id )
+      create(:invoice_item, item_id: aco.id, quantity: 30, unit_price: 30.0, invoice_id: invoice_4.id )
+      create(:invoice_item, item_id: overwatch.id, quantity: 30, unit_price: 30.0, invoice_id: invoice_5.id )
+      create(:invoice_item, item_id: starcraft.id, quantity: 10, unit_price: 10.0, invoice_id: invoice_6.id )
+      #transactions
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: invoice_4.id, result: 'failed')
+      create(:transaction, invoice_id: invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: invoice_6.id, result: 'success')
+    end
+
+    it "most_revenue returns a quantity of merchants sorted by most revenue" do
+      quantity = 2
+      get "/api/v1/merchants/most_revenue?quantity=#{quantity}"
+
+      expect(response).to be_successful
+
+      merchants = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchants).to have_key(:data)
+      expect(merchants[:data].count).to eq(2)
+
+      merchants[:data].each do |merchant|
+        expect(merchant).to have_key(:id)
+        expect(merchant[:id]).to be_an(String)
+
+        expect(merchant).to have_key(:type)
+        expect(merchant[:type]).to be_a(String)
+
+        expect(merchant).to have_key(:attributes)
+        expect(merchant[:attributes]).to be_a(Hash)
+      end
+
+      expect(merchants[:data][0][:attributes][:name]).to eq('CDProject Red')
+      expect(merchants[:data][1][:attributes][:name]).to eq('Ubisoft')
+    end
+
+    it "most_items_sold returns an array of merchant objects sorted by most items sold" do
+      quantity = 2
+      get "/api/v1/merchants/most_items?quantity=#{quantity}"
+
+      expect(response).to be_successful
+
+      merchants = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchants).to have_key(:data)
+      expect(merchants[:data].count).to eq(2)
+
+      merchants[:data].each do |merchant|
+        expect(merchant).to have_key(:id)
+        expect(merchant[:id]).to be_an(String)
+
+        expect(merchant).to have_key(:type)
+        expect(merchant[:type]).to be_a(String)
+
+        expect(merchant).to have_key(:attributes)
+        expect(merchant[:attributes]).to be_a(Hash)
+      end
+
+      expect(merchants[:data][0][:attributes][:name]).to eq('CDProject Red')
+      expect(merchants[:data][1][:attributes][:name]).to eq('Ubisoft')
+    end
+  end
 end
