@@ -38,4 +38,8 @@ class SearchFacade
   def self.revenue_accross_dates(params)
     Merchant.total_revenue_across_dates(params[:start], params[:end])
   end
+
+  def self.merchant_revenue(params)
+    Merchant.total_revenue_for_merchant(params[:id])
+  end
 end
