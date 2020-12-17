@@ -16,6 +16,8 @@ Rails.application.routes.draw do
         get '/find_all', to: 'search#find_all'
       end
 
+      get 'revenue', to: 'merchants#revenue_accross_dates'
+
 
       resources :merchants
       resources :items
