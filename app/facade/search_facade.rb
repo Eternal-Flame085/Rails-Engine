@@ -31,7 +31,11 @@ class SearchFacade
     Merchant.find_most_revenue(params[:quantity])
   end
 
-  def self.most_items
+  def self.most_items(params)
     Merchant.find_most_items_sold(params[:quantity])
+  end
+
+  def self.revenue_accross_dates(params)
+    Merchant.total_revenue_across_dates(params[:start], params[:end])
   end
 end
