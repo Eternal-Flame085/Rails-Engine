@@ -14,4 +14,8 @@ class Api::V1::Merchants::SearchController < ApplicationController
   def most_items
     render json: MerchantSerializer.new(SearchFacade.most_items(params))
   end
+
+  def merchant_revenue
+    render json: RevenueSerializer.revenue(SearchFacade.merchant_revenue(params))
+  end
 end
