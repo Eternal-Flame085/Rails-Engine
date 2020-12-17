@@ -74,12 +74,12 @@ describe 'Finders' do
       overwatch = create(:item, name: 'Overwatch', unit_price: 60.0, merchant_id: blizzard.id)
       starcraft = create(:item, name: 'Starcraft', unit_price: 30.0, merchant_id: blizzard.id)
       #The invoices
-      invoice_1 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
-      invoice_2 = create(:invoice, customer_id: customer.id, merchant_id: cdpr.id)
-      invoice_3 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
-      invoice_4 = create(:invoice, customer_id: customer.id, merchant_id: ubisoft.id)
-      invoice_5 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
-      invoice_6 = create(:invoice, customer_id: customer.id, merchant_id: blizzard.id)
+      invoice_1 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: cdpr.id, created_at: '2012-03-09')
+      invoice_2 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: cdpr.id, created_at: '2013-03-09')
+      invoice_3 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: ubisoft.id, created_at: '2014-03-09')
+      invoice_4 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: ubisoft.id, created_at: '2015-03-09')
+      invoice_5 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: blizzard.id, created_at: '2016-03-09')
+      invoice_6 = create(:invoice, status: 'shipped', customer_id: customer.id, merchant_id: blizzard.id, created_at: '2017-03-09')
       #Invoice_items
       create(:invoice_item, item_id: cyberpunk.id, quantity: 100, unit_price: 60.0, invoice_id: invoice_1.id )
       create(:invoice_item, item_id: wild_hunt.id, quantity: 60, unit_price: 30.0, invoice_id: invoice_2.id )
@@ -146,6 +146,25 @@ describe 'Finders' do
 
       expect(merchants[:data][0][:attributes][:name]).to eq('CDProject Red')
       expect(merchants[:data][1][:attributes][:name]).to eq('Ubisoft')
+    end
+
+    it "revenue_accross_dates returns a json with total revenue across all merchants between 2 dates" do
+      start = '2012-03-09'
+      end_date = '2014-03-24'
+
+      get "/api/v1/revenue?start=#{start}&end=#{end_date}"
+
+      expect(response).to be_successful
+
+      revenue = JSON.parse(response.body, symbolize_names: true)
+
+      expect(revenue).to have_key(:data)
+
+      expect(revenue[:data]).to have_key(:id)
+      expect(revenue[:data]).to have_key(:attributes)
+
+      expect(revenue[:data][:attributes]).to have_key(:revenue)
+      expect(revenue[:data][:attributes][:revenue]).to eq(11400.0)
     end
   end
 end
