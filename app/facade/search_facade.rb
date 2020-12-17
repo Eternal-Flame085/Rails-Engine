@@ -26,4 +26,12 @@ class SearchFacade
     attribute = params.keys.first
     Merchant.find_all_merchant_search(attribute, params[attribute])
   end
+
+  def self.most_revenue(params)
+    Merchant.find_most_revenue(params[:quantity])
+  end
+
+  def self.most_items
+    Merchant.find_most_items_sold(params[:quantity])
+  end
 end
