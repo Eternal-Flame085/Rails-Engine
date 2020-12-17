@@ -30,7 +30,7 @@ describe "Merchant API" do
   it "can get one merchant by its id" do
     id = create(:merchant).id
 
-    get "/api/v1/merchants/#{id}"
+    get api_v1_merchant_path(id)
 
     merchant = JSON.parse(response.body, symbolize_names: true)
 
