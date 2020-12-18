@@ -4,11 +4,22 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-    render json: MerchantSerializer.new(Merchant.find(params[:id]))
+    merchant = Merchant.where(id: params[:id]).first
+
+    if merchant
+      render json: MerchantSerializer.new(merchant)
+    else
+      render json: ErrorSerializer.error
+    end
   end
 
   def create
-    render json: MerchantSerializer.new(Merchant.create(merchant_params))
+    merchant = Merchant.create(merchant_params)
+    if merchant.id != nil
+      render json: MerchantSerializer.new(merchant)
+    else
+      render json: ErrorSerializer.error("Missing attributes")
+    end
   end
 
   def update
