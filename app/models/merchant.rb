@@ -10,11 +10,21 @@ class Merchant < ApplicationRecord
   end
 
   def self.find_all_merchant_search(attribute, value)
-    where("#{attribute} ILIKE ?", "%#{value}%")
+    if  attribute == 'created_at'  || attribute == 'updated_at'
+      where(attribute.to_sym => ("#{value} 00:00:00")..("#{value} 23:59:59")).first
+    else
+      where("#{attribute} ILIKE ?", "%#{value}%")
+    end
   end
 
   def self.find_merchant(attribute, value)
-    where("#{attribute} ILIKE ?", "%#{value}%").first
+    if attribute == 'id'
+      where(attribute.to_sym => value)
+    elsif  attribute == 'created_at'  || attribute == 'updated_at'
+      where(attribute.to_sym => ("#{value} 00:00:00")..("#{value} 23:59:59")).first
+    else
+      where("#{attribute} ILIKE ?", "%#{value}%").first
+    end
   end
 
   def self.find_most_revenue(quantity)
