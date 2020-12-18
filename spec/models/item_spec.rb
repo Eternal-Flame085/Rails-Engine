@@ -53,19 +53,49 @@ RSpec.describe Item, type: :model do
       create(:item, unit_price: 60.0)
       value = 60.0
 
-      item = Item.find_item_with_unit_price(value)
+      item = Item.find_item('unit_price', value)
 
       expect(item).to be_a Item
       expect(item.unit_price).to eq(value)
     end
 
-    it ".find_items_with_unit_price returns an array of Items that have a matching unit price" do
+    it ".find_item will return one item with matching id" do
+      item_1 = create(:item)
+
+      item = Item.find_item('id', item_1.id)
+
+      expect(item).to be_a Item
+      expect(item.id).to eq(item_1.id)
+    end
+
+    it ".find_item will return one item with matching created_at date" do
+      item_1 = create(:item, created_at: '2012-03-27')
+
+      item = Item.find_item('created_at', item_1.created_at)
+
+      expect(item).to be_a Item
+      expect(item.created_at).to eq(item_1.created_at)
+    end
+
+    it ".find_all_items will return one item with matching created_at date" do
+      item_1 = create(:item, created_at: '2012-03-27')
+      item_2 = create(:item, created_at: '2012-03-27')
+      date = '2012-03-27'
+
+      items = Item.find_all_items_search('created_at', date)
+      
+      expect(items.count).to eq(2)
+      expect(items[0].created_at).to eq(item_1.created_at)
+      expect(items[1].created_at).to eq(item_2.created_at)
+    end
+
+    it ".find_all_items_search returns an array of Items that have a matching unit price" do
       create(:item, unit_price: 60.0)
       create(:item, unit_price: 60.0)
       create(:item, unit_price: 50.0)
-      value = 60.0
+      value = 60.00
 
-      items = Item.find_items_with_unit_price(value)
+      items = Item.find_all_items_search('unit_price', value)
 
       expect(items[0]).to be_a Item
       expect(items[0].unit_price).to eq(value)
@@ -73,5 +103,6 @@ RSpec.describe Item, type: :model do
       expect(items[1]).to be_a Item
       expect(items[1].unit_price).to eq(value)
     end
+
   end
 end

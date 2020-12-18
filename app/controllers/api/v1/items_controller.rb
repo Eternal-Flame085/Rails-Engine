@@ -4,11 +4,22 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def show
-    render json: ItemSerializer.new(Item.find(params[:id]))
+    item = Item.where(id: params[:id]).first
+
+    if item
+      render json: ItemSerializer.new((item))
+    else
+      render json: ErrorSerializer.error
+    end
   end
 
   def create
-    render json: ItemSerializer.new(Item.create(item_params))
+    item = Item.create(item_params)
+    if item.id != nil
+      render json: ItemSerializer.new(item)
+    else
+      render json: ErrorSerializer.error("Missing attributes")
+    end
   end
 
   def update
