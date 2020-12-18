@@ -96,7 +96,7 @@ describe "Items API" do
 
     post "/api/v1/items", headers: headers, params: JSON.generate(item_params)
     sad_message = JSON.parse(response.body, symbolize_names: true)
-    require "pry"; binding.pry
+    
     expect(sad_message).to have_key(:data)
     expect(sad_message[:data]).to have_key(:attributes)
     expect(sad_message[:data][:attributes]).to have_key(:error)
