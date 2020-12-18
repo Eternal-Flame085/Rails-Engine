@@ -21,14 +21,36 @@ RSpec.describe Merchant, type: :model do
     end
 
     it ".find_merchant returns a merchant based on the attribute and value given" do
-      merchant = create(:merchant, name: 'CDProject Red')
+      create(:merchant, name: 'CDProject Red')
       attribute = 'name'
       value = 'red'
 
-      merchant = Merchant.find_merchant(attribute, value)
+      merchant_object = Merchant.find_merchant(attribute, value)
 
-      expect(merchant).to be_a Merchant
-      expect(merchant.name).to eq('CDProject Red')
+      expect(merchant_object).to be_a Merchant
+      expect(merchant_object.name).to eq('CDProject Red')
+    end
+
+    it ".find_merchant returns a merchant based on the attribute and value given with created at" do
+      create(:merchant, created_at: '2012-03-27')
+      attribute = 'created_at'
+      value = '2012-03-27'
+
+      merchant_object = Merchant.find_merchant(attribute, value)
+
+      expect(merchant_object).to be_a Merchant
+      expect(merchant_object.created_at).to eq('2012-03-27')
+    end
+
+    it ".find_merchant returns a merchant based on the attribute and value given with created at" do
+      merchant = create(:merchant)
+      attribute = 'id'
+      value = merchant.id
+
+      merchant_object = Merchant.find_merchant(attribute, value)
+
+      expect(merchant_object).to be_a Merchant
+      expect(merchant_object.id).to eq(merchant.id)
     end
 
     it ".find_all_merchant_seach returns an array of Merchant objects that match the value given" do
@@ -37,6 +59,22 @@ RSpec.describe Merchant, type: :model do
       create(:merchant, name: 'Just different')
       attribute = 'name'
       value = 'red'
+
+      merchants = Merchant.find_all_merchant_search(attribute, value)
+
+      expect(merchants[0]).to be_a Merchant
+      expect(merchants[0].name).to eq('CDProject Red')
+
+      expect(merchants[1]).to be_a Merchant
+      expect(merchants[1].name).to eq('Red Camera Company')
+    end
+
+    it ".find_all_merchant_seach returns an array of Merchant objects that match the created at" do
+      create(:merchant, name: 'CDProject Red', created_at: '2012-03-27 00:00:00')
+      create(:merchant, name: 'Red Camera Company', created_at: '2012-03-27 23:59:59')
+      create(:merchant, name: 'Just different')
+      attribute = 'created_at'
+      value = '2012-03-27'
 
       merchants = Merchant.find_all_merchant_search(attribute, value)
 

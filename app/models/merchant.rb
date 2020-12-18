@@ -11,7 +11,7 @@ class Merchant < ApplicationRecord
 
   def self.find_all_merchant_search(attribute, value)
     if  attribute == 'created_at'  || attribute == 'updated_at'
-      where(attribute.to_sym => ("#{value} 00:00:00")..("#{value} 23:59:59")).first
+      where(attribute.to_sym => ("#{value} 00:00:00")..("#{value} 23:59:59"))
     else
       where("#{attribute} ILIKE ?", "%#{value}%")
     end
@@ -19,7 +19,7 @@ class Merchant < ApplicationRecord
 
   def self.find_merchant(attribute, value)
     if attribute == 'id'
-      where(attribute.to_sym => value)
+      where(attribute.to_sym => value).first
     elsif  attribute == 'created_at'  || attribute == 'updated_at'
       where(attribute.to_sym => ("#{value} 00:00:00")..("#{value} 23:59:59")).first
     else
