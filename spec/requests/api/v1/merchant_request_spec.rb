@@ -57,6 +57,19 @@ describe "Merchant API" do
     expect(created_merchant.name).to eq(merchant_params[:name])
   end
 
+  it "error creating a merchant sad path" do
+    merchant_params = {}
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    post "/api/v1/merchants", headers: headers, params: JSON.generate(merchant_params)
+    sad_message = JSON.parse(response.body, symbolize_names: true)
+
+    expect(sad_message).to have_key(:data)
+    expect(sad_message[:data]).to have_key(:attributes)
+    expect(sad_message[:data][:attributes]).to have_key(:error)
+    expect(sad_message[:data][:attributes][:error]).to eq('Missing attributes')
+  end
+
   it "can update an existing merchant" do
     id = create(:merchant).id
     previous_name = Merchant.last.name
@@ -83,6 +96,19 @@ describe "Merchant API" do
     expect{Merchant.find(merchant.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it "if a merchant is not founde a serialized error will appear" do
+    id = 1
+    get "/api/v1/merchants/#{id}"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchant).to have_key(:data)
+    expect(merchant[:data]).to have_key(:attributes)
+    expect(merchant[:data][:attributes]).to have_key(:error)
+    expect(merchant[:data][:attributes][:error]).to eq('Something wend wrong, check your URL')
+  end
 end
 
 describe 'Relationships' do

@@ -85,6 +85,24 @@ describe "Items API" do
     expect(created_item.merchant_id).to eq(item_params[:merchant_id])
   end
 
+  it "item cannot be created a serialized error will appear" do
+    merchant_id = create(:merchant).id
+    item_params = ({
+                    description: 'description',
+                    unit_price: 145.6,
+                    merchant_id: merchant_id
+                  })
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    post "/api/v1/items", headers: headers, params: JSON.generate(item_params)
+    sad_message = JSON.parse(response.body, symbolize_names: true)
+    require "pry"; binding.pry
+    expect(sad_message).to have_key(:data)
+    expect(sad_message[:data]).to have_key(:attributes)
+    expect(sad_message[:data][:attributes]).to have_key(:error)
+    expect(sad_message[:data][:attributes][:error]).to eq('Missing attributes')
+  end
+
 
   it "can update an existing Item" do
     id = create(:item).id
@@ -112,6 +130,20 @@ describe "Items API" do
 
     expect(response).to be_successful
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "if Item is not found a serialized error will appear" do
+    id = 1
+    get "/api/v1/items/#{id}"
+
+    expect(response).to be_successful
+
+    item = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item).to have_key(:data)
+    expect(item[:data]).to have_key(:attributes)
+    expect(item[:data][:attributes]).to have_key(:error)
+    expect(item[:data][:attributes][:error]).to eq('Something wend wrong, check your URL')
   end
 end
 
