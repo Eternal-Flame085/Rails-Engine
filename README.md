@@ -1,24 +1,26 @@
-# README
+# Rails-Engine
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+  Rails Engine is a Turing solo project meant to teach us how to expose an API with data meant to be consumed by a front end API.
 
-Things you may want to cover:
+## Setup
 
-* Ruby version
+### Prerequisites
 
-* System dependencies
+This project requires the use of `Ruby 2.5.3` and `Rails 5.2.4.3`,
+and `PostgreSQL` as the database.
 
-* Configuration
+### Local Setup
 
-* Database creation
+To setup locally, follow these instructions:
+  * __Fork & Clone Repo__
+    * Fork this repo to your own GitHub account.
+    * Create a new directory locally or `cd` into whichever directory you wish to clone down to.
+    * Enter `git clone git@github.com:<<YOUR GITHUB USERNAME>>/Rails-Engine.git`
+  * __Install Gems__
+    * Run `bundle install` to install all gems in the Gemfile
+  * __Set Up Local Database and Migrations__
+    * Run `rake db:{drop,create,migrate,seed}`
 
-* Database initialization
+## Running the tests
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run the command `bundle exec rspec` in the terminal.  You should see all passing tests.
